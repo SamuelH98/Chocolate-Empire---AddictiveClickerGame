@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chocolate Empire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #8B4513, #D2691E, #CD853F);
+            min-height: 100vh;
+            color: #2F1B14;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 300px 300px;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .main-game {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 3px solid #8B4513;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #FFE4B5;
+            margin-top: 5px;
+        }
+
+        .chocolate-clicker {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .main-chocolate {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #D2691E, #8B4513);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border: 8px solid #654321;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            user-select: none;
+        }
+
+        .main-chocolate:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .main-chocolate:active {
+            transform: scale(0.95);
+        }
+
+        .click-animation {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+
+        .upgrades-panel, .inventory-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .upgrade-item {
+            background: linear-gradient(45deg, #CD853F, #D2691E);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #8B4513;
+        }
+
+        .upgrade-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .upgrade-item.affordable {
+            border-color: #32CD32;
+            box-shadow: 0 0 15px rgba(50, 205, 50, 0.3);
+        }
+
+        .upgrade-name {
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+
+        .upgrade-cost {
+            color: #FFE4B5;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .upgrade-count {
+            color: #FFD700;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .inventory-item {
+            background: linear-gradient(45deg, #8B4513, #A0522D);
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #654321;
+            position: relative;
+        }
+
+        .inventory-item.rare { border-color: #4169E1; box-shadow: 0 0 10px rgba(65, 105, 225, 0.3); }
+        .inventory-item.epic { border-color: #9932CC; box-shadow: 0 0 10px rgba(153, 50, 204, 0.3); }
+        .inventory-item.legendary { border-color: #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: bold;
+            color: white;
+            font-size: 13px;
+        }
+
+        .item-rarity {
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .item-rarity.common { color: #D3D3D3; }
+        .item-rarity.rare { color: #4169E1; }
+        .item-rarity.epic { color: #9932CC; }
+        .item-rarity.legendary { color: #FFD700; }
+
+        .item-quantity {
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 12px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .trade-button {
+            background: linear-gradient(45deg, #32CD32, #228B22);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .trade-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(50, 205, 50, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #32CD32, #228B22);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+            z-index: 1000;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(100%); }
+        }
+
+        .prestige-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .prestige-button {
+            background: linear-gradient(45deg, #FF69B4, #FF1493);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255,255,255,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .prestige-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+        }
+
+        .prestige-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="main-game">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="chocolates">0</div>
+                    <div class="stat-label">Chocolates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="cps">0</div>
+                    <div class="stat-label">Per Second</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="prestige-points">0</div>
+                    <div class="stat-label">Prestige Points</div>
+                </div>
+            </div>
+
+            <div class="chocolate-clicker">
+                <div class="main-chocolate" id="mainChocolate">🍫</div>
+            </div>
+
+            <div class="prestige-section">
+                <button class="prestige-button" id="prestigeBtn" disabled>
+                    Reset for Prestige (Need 1M chocolates)
+                </button>
+            </div>
+        </div>
+
+        <div class="upgrades-panel">
+            <div class="panel-title">🏭 Chocolate Factory</div>
+            <div id="upgrades-container"></div>
+        </div>
+
+        <div class="inventory-panel">
+            <div class="panel-title">🎒 Chocolate Collection</div>
+            <div id="inventory-container"></div>
+        </div>
+    </div>
+
+    <script>
+        class ChocolateGame {
+            constructor() {
+                this.chocolates = 0;
+                this.chocolatesPerSecond = 0;
+                this.prestigePoints = 0;
+                this.clickPower = 1;
+                this.inventory = {};
+                
+                this.upgrades = [
+                    { id: 'cursor', name: '👆 Chocolate Finger', baseCost: 15, cost: 15, count: 0, cps: 0.1 },
+                    { id: 'grandma', name: '👵 Chocolate Grandma', baseCost: 100, cost: 100, count: 0, cps: 1 },
+                    { id: 'farm', name: '🚜 Cocoa Farm', baseCost: 1100, cost: 1100, count: 0, cps: 8 },
+                    { id: 'mine', name: '⛏️ Chocolate Mine', baseCost: 12000, cost: 12000, count: 0, cps: 47 },
+                    { id: 'factory', name: '🏭 Chocolate Factory', baseCost: 130000, cost: 130000, count: 0, cps: 260 },
+                    { id: 'bank', name: '🏦 Chocolate Bank', baseCost: 1400000, cost: 1400000, count: 0, cps: 1400 },
+                    { id: 'temple', name: '🏛️ Chocolate Temple', baseCost: 20000000, cost: 20000000, count: 0, cps: 7800 }
+                ];
+
+                this.chocolateTypes = [
+                    { name: 'Milk Chocolate', rarity: 'common', emoji: '🍫', dropRate: 0.7 },
+                    { name: 'Dark Chocolate', rarity: 'common', emoji: '🍫', dropRate: 0.6 },
+                    { name: 'White Chocolate', rarity: 'rare', emoji: '🤍', dropRate: 0.2 },
+                    { name: 'Truffle', rarity: 'rare', emoji: '🍄', dropRate: 0.15 },
+                    { name: 'Praline', rarity: 'epic', emoji: '💎', dropRate: 0.05 },
+                    { name: 'Golden Chocolate', rarity: 'epic', emoji: '🌟', dropRate: 0.03 },
+                    { name: 'Legendary Cocoa Bean', rarity: 'legendary', emoji: '👑', dropRate: 0.01 },
+                    { name: 'Divine Chocolate', rarity: 'legendary', emoji: '✨', dropRate: 0.005 }
+                ];
+
+                this.init();
+            }
+
+            init() {
+                this.loadGame();
+                this.setupEventListeners();
+                this.renderUpgrades();
+                this.renderInventory();
+                this.startGameLoop();
+                this.updateDisplay();
+            }
+
+            setupEventListeners() {
+                document.getElementById('mainChocolate').addEventListener('click', (e) => {
+                    this.clickChocolate(e);
+                });
+
+                document.getElementById('prestigeBtn').addEventListener('click', () => {
+                    this.prestige();
+                });
+            }
+
+            clickChocolate(e) {
+                const clickPower = this.clickPower * (1 + this.prestigePoints * 0.1);
+                this.chocolates += clickPower;
+                
+                // Create click animation
+                const rect = e.target.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const animation = document.createElement('div');
+                animation.className = 'click-animation';
+                animation.textContent = `+${Math.floor(clickPower)}`;
+                animation.style.left = x + 'px';
+                animation.style.top = y + 'px';
+                
+                e.target.parentElement.appendChild(animation);
+                setTimeout(() => animation.remove(), 1000);
+
+                // Random chocolate drop
+                this.tryChocolateDrop();
+                this.updateDisplay();
+                this.saveGame();
+            }
+
+            tryChocolateDrop() {
+                const random = Math.random();
+                let cumulativeRate = 0;
+
+                for (const chocolate of this.chocolateTypes) {
+                    cumulativeRate += chocolate.dropRate;
+                    if (random < cumulativeRate / 10) { // Reduced drop rate
+                        this.addToInventory(chocolate);
+                        this.showNotification(`Found ${chocolate.emoji} ${chocolate.name}!`);
+                        break;
+                    }
+                }
+            }
+
+            addToInventory(chocolate) {
+                const key = chocolate.name;
+                if (!this.inventory[key]) {
+                    this.inventory[key] = { ...chocolate, quantity: 0 };
+                }
+                this.inventory[key].quantity++;
+                this.renderInventory();
+            }
+
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.remove(), 3000);
+            }
+
+            renderUpgrades() {
+                const container = document.getElementById('upgrades-container');
+                container.innerHTML = '';
+
+                this.upgrades.forEach(upgrade => {
+                    const div = document.createElement('div');
+                    div.className = 'upgrade-item';
+                    if (this.chocolates >= upgrade.cost) {
+                        div.classList.add('affordable');
+                    }
+
+                    div.innerHTML = `
+                        <div class="upgrade-name">${upgrade.name}</div>
+                        <div class="upgrade-cost">Cost: ${this.formatNumber(upgrade.cost)}</div>
+                        <div class="upgrade-count">Owned: ${upgrade.count}</div>
+                    `;
+
+                    div.addEventListener('click', () => this.buyUpgrade(upgrade));
+                    container.appendChild(div);
+                });
+            }
+
+            renderInventory() {
+                const container = document.getElementById('inventory-container');
+                container.innerHTML = '';
+
+                Object.values(this.inventory).forEach(item => {
+                    if (item.quantity > 0) {
+                        const div = document.createElement('div');
+                        div.className = `inventory-item ${item.rarity}`;
+
+                        div.innerHTML = `
+                            <div class="item-info">
+                                <div class="item-name">${item.emoji} ${item.name}</div>
+                                <div class="item-rarity ${item.rarity}">${item.rarity}</div>
+                            </div>
+                            <div>
+                                <span class="item-quantity">${item.quantity}</span>
+                                <button class="trade-button" onclick="game.tradeItem('${item.name}')">Trade</button>
+                            </div>
+                        `;
+
+                        container.appendChild(div);
+                    }
+                });
+            }
+
+            tradeItem(itemName) {
+                const item = this.inventory[itemName];
+                if (!item || item.quantity <= 0) return;
+
+                const tradeValues = {
+                    'common': 10,
+                    'rare': 50,
+                    'epic': 250,
+                    'legendary': 1000
+                };
+
+                const value = tradeValues[item.rarity];
+                this.chocolates += value;
+                item.quantity--;
+
+                this.showNotification(`Traded ${item.name} for ${value} chocolates!`);
+                this.renderInventory();
+                this.updateDisplay();
+                this.saveGame();
+            }
+
+            buyUpgrade(upgrade) {
+                if (this.chocolates >= upgrade.cost) {
+                    this.chocolates -= upgrade.cost;
+                    upgrade.count++;
+                    upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.count));
+                    
+                    this.calculateCPS();
+                    this.renderUpgrades();
+                    this.updateDisplay();
+                    this.saveGame();
+                    
+                    this.showNotification(`Bought ${upgrade.name}!`);
+                }
+            }
+
+            calculateCPS() {
+                this.chocolatesPerSecond = 0;
+                this.upgrades.forEach(upgrade => {
+                    this.chocolatesPerSecond += upgrade.count * upgrade.cps * (1 + this.prestigePoints * 0.1);
+                });
+            }
+
+            prestige() {
+                if (this.chocolates >= 1000000) {
+                    const newPrestigePoints = Math.floor(this.chocolates / 1000000);
+                    this.prestigePoints += newPrestigePoints;
+                    
+                    // Reset everything except prestige points
+                    this.chocolates = 0;
+                    this.chocolatesPerSecond = 0;
+                    this.inventory = {};
+                    this.upgrades.forEach(upgrade => {
+                        upgrade.count = 0;
+                        upgrade.cost = upgrade.baseCost;
+                    });
+
+                    this.showNotification(`Prestige! Gained ${newPrestigePoints} prestige points!`);
+                    this.renderUpgrades();
+                    this.renderInventory();
+                    this.updateDisplay();
+                    this.saveGame();
+                }
+            }
+
+            startGameLoop() {
+                setInterval(() => {
+                    if (this.chocolatesPerSecond > 0) {
+                        this.chocolates += this.chocolatesPerSecond / 10; // 100ms intervals
+                        this.updateDisplay();
+                    }
+                }, 100);
+
+                // Auto-save every 30 seconds
+                setInterval(() => {
+                    this.saveGame();
+                }, 30000);
+            }
+
+            updateDisplay() {
+                document.getElementById('chocolates').textContent = this.formatNumber(Math.floor(this.chocolates));
+                document.getElementById('cps').textContent = this.formatNumber(this.chocolatesPerSecond.toFixed(1));
+                document.getElementById('prestige-points').textContent = this.prestigePoints;
+                
+                const prestigeBtn = document.getElementById('prestigeBtn');
+                if (this.chocolates >= 1000000) {
+                    prestigeBtn.disabled = false;
+                    prestigeBtn.textContent = `Reset for ${Math.floor(this.chocolates / 1000000)} Prestige Points`;
+                } else {
+                    prestigeBtn.disabled = true;
+                    prestigeBtn.textContent = `Reset for Prestige (Need 1M chocolates)`;
+                }
+
+                this.renderUpgrades();
+            }
+
+            formatNumber(num) {
+                if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+                if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+                if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+                if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+                return num.toString();
+            }
+
+            saveGame() {
+                const saveData = {
+                    chocolates: this.chocolates,
+                    prestigePoints: this.prestigePoints,
+                    upgrades: this.upgrades,
+                    inventory: this.inventory,
+                    timestamp: Date.now()
+                };
+                // Note: Using in-memory storage since localStorage isn't available in Claude artifacts
+                window.gameSave = saveData;
+            }
+
+            loadGame() {
+                // Note: In a real environment, this would load from localStorage
+                if (window.gameSave) {
+                    const save = window.gameSave;
+                    this.chocolates = save.chocolates || 0;
+                    this.prestigePoints = save.prestigePoints || 0;
+                    this.upgrades = save.upgrades || this.upgrades;
+                    this.inventory = save.inventory || {};
+                    
+                    // Calculate offline progress
+                    if (save.timestamp) {
+                        const offlineTime = (Date.now() - save.timestamp) / 1000;
+                        this.calculateCPS();
+                        const offlineEarnings = this.chocolatesPerSecond * Math.min(offlineTime, 3600); // Max 1 hour offline
+                        if (offlineEarnings > 0) {
+                            this.chocolates += offlineEarnings;
+                            this.showNotification(`Welcome back! You earned ${this.formatNumber(Math.floor(offlineEarnings))} chocolates while away!`);
+                        }
+                    }
+                }
+                this.calculateCPS();
+            }
+        }
+
+        // Start the game
+        const game = new ChocolateGame();
+        window.game = game; // Make game accessible for trading buttons
+    </script>
+</body>
+</html>
