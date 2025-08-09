@@ -3,70 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chocolate Empire</title>
+    <title>Chocolate Empire - Ultimate Edition</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-brown: #4A2C2A;
+            --secondary-brown: #6B4423;
+            --light-brown: #8B5A3C;
+            --accent-gold: #FFD700;
+            --accent-orange: #FF8C42;
+            --dark-chocolate: #2D1B13;
+            --milk-chocolate: #D2691E;
+            --white-chocolate: #F5DEB3;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+        }
+
         body {
-            font-family: 'Comic Sans MS', cursive;
-            background: linear-gradient(135deg, #8B4513, #D2691E, #CD853F);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, 
+                var(--dark-chocolate) 0%, 
+                var(--primary-brown) 25%, 
+                var(--secondary-brown) 50%, 
+                var(--light-brown) 75%, 
+                var(--milk-chocolate) 100%);
             min-height: 100vh;
-            color: #2F1B14;
+            color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,215,0,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,140,66,0.1)"/><circle cx="40" cy="70" r="2.5" fill="rgba(255,215,0,0.1)"/><circle cx="70" cy="80" r="1" fill="rgba(255,140,66,0.1)"/><circle cx="10" cy="90" r="2" fill="rgba(255,215,0,0.1)"/></svg>') repeat;
+            animation: twinkle 3s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
         }
 
         .game-container {
             display: grid;
-            grid-template-columns: 1fr 300px 300px;
+            grid-template-columns: 1fr 350px 350px;
             height: 100vh;
             gap: 20px;
             padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
 
         .main-game {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
         .stats {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
+            width: 100%;
+            margin-bottom: 40px;
         }
 
         .stat-card {
-            background: linear-gradient(45deg, #D2691E, #CD853F);
-            padding: 15px 25px;
-            border-radius: 15px;
+            background: linear-gradient(135deg, 
+                rgba(255, 215, 0, 0.2) 0%, 
+                rgba(255, 140, 66, 0.2) 100%);
+            padding: 25px;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            border: 3px solid #8B4513;
-            flex: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
         }
 
         .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent-gold);
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 8px;
         }
 
         .stat-label {
             font-size: 14px;
-            color: #FFE4B5;
-            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+            letter-spacing: 1px;
         }
 
         .chocolate-clicker {
@@ -75,24 +155,54 @@
         }
 
         .main-chocolate {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, #D2691E, #8B4513);
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, 
+                var(--milk-chocolate) 0%, 
+                var(--secondary-brown) 50%, 
+                var(--dark-chocolate) 100%);
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.1s ease;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            border: 8px solid #654321;
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 0 8px rgba(255, 215, 0, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
+            font-size: 80px;
             user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-chocolate::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 70%);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .main-chocolate:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(1.08);
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 0 12px rgba(255, 215, 0, 0.2),
+                0 0 40px rgba(255, 215, 0, 0.3);
         }
 
         .main-chocolate:active {
@@ -101,149 +211,439 @@
 
         .click-animation {
             position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: #FFD700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent-gold);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
             pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
+            animation: floatUp 1.2s ease-out forwards;
+            z-index: 10;
         }
 
         @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-100px); }
+            0% { 
+                opacity: 1; 
+                transform: translateY(0) scale(0.8); 
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50px) scale(1.2);
+            }
+            100% { 
+                opacity: 0; 
+                transform: translateY(-120px) scale(0.8); 
+            }
         }
 
         .upgrades-panel, .inventory-panel {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
+        }
+
+        .upgrades-panel::-webkit-scrollbar,
+        .inventory-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .upgrades-panel::-webkit-scrollbar-track,
+        .inventory-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .upgrades-panel::-webkit-scrollbar-thumb,
+        .inventory-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 3px;
         }
 
         .panel-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-gold);
             text-align: center;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .upgrade-item {
-            background: linear-gradient(45deg, #CD853F, #D2691E);
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid #8B4513;
-        }
-
-        .upgrade-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .upgrade-item.affordable {
-            border-color: #32CD32;
-            box-shadow: 0 0 15px rgba(50, 205, 50, 0.3);
-        }
-
-        .upgrade-name {
-            font-weight: bold;
-            color: white;
-            font-size: 14px;
-        }
-
-        .upgrade-cost {
-            color: #FFE4B5;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .upgrade-count {
-            color: #FFD700;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .inventory-item {
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            margin: 8px 0;
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 2px solid #654321;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
-        .inventory-item.rare { border-color: #4169E1; box-shadow: 0 0 10px rgba(65, 105, 225, 0.3); }
-        .inventory-item.epic { border-color: #9932CC; box-shadow: 0 0 10px rgba(153, 50, 204, 0.3); }
-        .inventory-item.legendary { border-color: #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+        .panel-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            border-radius: 2px;
+        }
+
+        .upgrade-item {
+            background: linear-gradient(135deg, 
+                rgba(255, 140, 66, 0.15) 0%, 
+                rgba(139, 90, 60, 0.15) 100%);
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            transition: left 0.5s;
+        }
+
+        .upgrade-item:hover::before {
+            left: 100%;
+        }
+
+        .upgrade-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 140, 66, 0.3);
+            border-color: rgba(255, 140, 66, 0.6);
+        }
+
+        .upgrade-item.affordable {
+            border-color: var(--success);
+            background: linear-gradient(135deg, 
+                rgba(16, 185, 129, 0.15) 0%, 
+                rgba(255, 140, 66, 0.15) 100%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .upgrade-name {
+            font-weight: 600;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-cost {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-count {
+            color: var(--accent-gold);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .inventory-item {
+            background: linear-gradient(135deg, 
+                rgba(74, 44, 42, 0.3) 0%, 
+                rgba(107, 68, 35, 0.3) 100%);
+            margin: 12px 0;
+            padding: 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(107, 68, 35, 0.4);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .inventory-item:hover {
+            transform: translateX(5px);
+        }
+
+        .inventory-item.rare { 
+            border-color: #3B82F6; 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); 
+        }
+        .inventory-item.epic { 
+            border-color: #8B5CF6; 
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); 
+        }
+        .inventory-item.legendary { 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); 
+        }
 
         .item-info {
             flex: 1;
         }
 
         .item-name {
-            font-weight: bold;
+            font-weight: 600;
             color: white;
-            font-size: 13px;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
 
         .item-rarity {
             font-size: 11px;
-            margin-top: 2px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .item-rarity.common { color: #D3D3D3; }
-        .item-rarity.rare { color: #4169E1; }
-        .item-rarity.epic { color: #9932CC; }
-        .item-rarity.legendary { color: #FFD700; }
+        .item-rarity.common { color: #9CA3AF; }
+        .item-rarity.rare { color: #3B82F6; }
+        .item-rarity.epic { color: #8B5CF6; }
+        .item-rarity.legendary { color: var(--accent-gold); }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
         .item-quantity {
-            background: rgba(0,0,0,0.3);
-            padding: 4px 8px;
-            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 12px;
+            border-radius: 20px;
             color: white;
-            font-size: 11px;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .trade-button {
-            background: linear-gradient(45deg, #32CD32, #228B22);
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             color: white;
             border: none;
-            padding: 4px 8px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 10px;
-            margin-left: 5px;
+            font-size: 11px;
+            font-weight: 600;
             transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .trade-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(50, 205, 50, 0.3);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Spin Wheel Styles */
+        .spin-wheel-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .spin-wheel-modal {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            padding: 40px;
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            position: relative;
+        }
+
+        .wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto;
+            transition: transform 3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            background: conic-gradient(
+                from 0deg,
+                #FF6B6B 0deg 60deg,
+                #4ECDC4 60deg 120deg,
+                #45B7D1 120deg 180deg,
+                #96CEB4 180deg 240deg,
+                #FFEAA7 240deg 300deg,
+                #DDA0DD 300deg 360deg
+            );
+            border: 8px solid var(--accent-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid var(--accent-gold);
+            z-index: 10;
+        }
+
+        .wheel-prizes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .wheel-prize {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .spin-button {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #FFA500 100%);
+            color: var(--dark-chocolate);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .spin-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #FF6B35 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 140, 66, 0.4);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .prestige-button {
+            background: linear-gradient(135deg, #FF1493 0%, #8A2BE2 100%);
+        }
+
+        .prestige-button:hover {
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+        }
+
+        /* Achievements */
+        .achievements {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            animation: achievementSlide 0.5s ease, achievementFade 0.5s ease 4.5s forwards;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes achievementSlide {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes achievementFade {
+            to { opacity: 0; transform: translateX(100%); }
         }
 
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: linear-gradient(45deg, #32CD32, #228B22);
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             color: white;
             padding: 15px 25px;
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
             z-index: 1000;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         @keyframes slideIn {
@@ -255,60 +655,95 @@
             to { opacity: 0; transform: translateX(100%); }
         }
 
-        .prestige-section {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .prestige-button {
-            background: linear-gradient(45deg, #FF69B4, #FF1493);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
+        /* Golden Chocolate */
+        .golden-chocolate {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, var(--accent-gold) 0%, #FFA500 100%);
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 3px solid rgba(255,255,255,0.3);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: float 3s ease-in-out infinite, sparkle 1s linear infinite;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
         }
 
-        .prestige-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
-        .prestige-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        @keyframes sparkle {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.9); }
+        }
+
+        @media (max-width: 1200px) {
+            .game-container {
+                grid-template-columns: 1fr 320px;
+                grid-template-rows: auto auto;
+            }
         }
 
         @media (max-width: 768px) {
             .game-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto auto;
+                padding: 10px;
+                gap: 15px;
+            }
+
+            .main-chocolate {
+                width: 200px;
+                height: 200px;
+                font-size: 60px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .wheel {
+                width: 250px;
+                height: 250px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="achievements" id="achievements-container"></div>
+    
     <div class="game-container">
-        <div class="main-game">
+        <div class="main-game panel">
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-value" id="chocolates">0</div>
-                    <div class="stat-label">Chocolates</div>
+                    <div class="stat-label">🍫 Chocolates</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="cps">0</div>
-                    <div class="stat-label">Per Second</div>
+                    <div class="stat-label">⚡ Per Second</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="prestige-points">0</div>
-                    <div class="stat-label">Prestige Points</div>
+                    <div class="stat-label">⭐ Prestige Points</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="multiplier">1.0x</div>
+                    <div class="stat-label">🚀 Multiplier</div>
                 </div>
             </div>
 
@@ -316,21 +751,52 @@
                 <div class="main-chocolate" id="mainChocolate">🍫</div>
             </div>
 
-            <div class="prestige-section">
-                <button class="prestige-button" id="prestigeBtn" disabled>
-                    Reset for Prestige (Need 1M chocolates)
+            <div class="action-buttons">
+                <button class="action-btn" id="spinWheelBtn">
+                    🎰 Spin Wheel (50 🍫)
+                </button>
+                <button class="action-btn" id="goldenChocolateBtn">
+                    ✨ Golden Rush (500 🍫)
+                </button>
+                <button class="action-btn prestige-button" id="prestigeBtn" disabled>
+                    🌟 Reset for Prestige (Need 1M)
                 </button>
             </div>
         </div>
 
-        <div class="upgrades-panel">
+        <div class="upgrades-panel panel">
             <div class="panel-title">🏭 Chocolate Factory</div>
             <div id="upgrades-container"></div>
         </div>
 
-        <div class="inventory-panel">
+        <div class="inventory-panel panel">
             <div class="panel-title">🎒 Chocolate Collection</div>
             <div id="inventory-container"></div>
+        </div>
+    </div>
+
+    <!-- Spin Wheel Modal -->
+    <div class="spin-wheel-container" id="spinWheelModal">
+        <div class="spin-wheel-modal">
+            <button class="close-modal" id="closeSpinModal">&times;</button>
+            <h2 style="color: var(--accent-gold); margin-bottom: 20px;">🎰 Chocolate Wheel of Fortune</h2>
+            <div style="position: relative;">
+                <div class="wheel-pointer"></div>
+                <div class="wheel" id="wheel">
+                    <div class="wheel-prizes">
+                        <div class="wheel-prize" style="transform: rotate(0deg);">100 🍫</div>
+                        <div class="wheel-prize" style="transform: rotate(60deg);">2x Mult</div>
+                        <div class="wheel-prize" style="transform: rotate(120deg);">500 🍫</div>
+                        <div class="wheel-prize" style="transform: rotate(180deg);">Rare Item</div>
+                        <div class="wheel-prize" style="transform: rotate(240deg);">1000 🍫</div>
+                        <div class="wheel-prize" style="transform: rotate(300deg);">5x Mult</div>
+                    </div>
+                </div>
+            </div>
+            <button class="spin-button" id="spinBtn">Spin the Wheel!</button>
+            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 10px;">
+                Cost: 50 chocolates per spin
+            </p>
         </div>
     </div>
 
@@ -341,27 +807,55 @@
                 this.chocolatesPerSecond = 0;
                 this.prestigePoints = 0;
                 this.clickPower = 1;
+                this.multiplier = 1;
                 this.inventory = {};
+                this.achievements = new Set();
+                this.goldenChocolateActive = false;
+                this.lastSpinTime = 0;
+                this.spinCooldown = 5000; // 5 seconds
                 
                 this.upgrades = [
-                    { id: 'cursor', name: '👆 Chocolate Finger', baseCost: 15, cost: 15, count: 0, cps: 0.1 },
+                    { id: 'cursor', name: '👆 Auto Clicker', baseCost: 15, cost: 15, count: 0, cps: 0.1 },
                     { id: 'grandma', name: '👵 Chocolate Grandma', baseCost: 100, cost: 100, count: 0, cps: 1 },
                     { id: 'farm', name: '🚜 Cocoa Farm', baseCost: 1100, cost: 1100, count: 0, cps: 8 },
                     { id: 'mine', name: '⛏️ Chocolate Mine', baseCost: 12000, cost: 12000, count: 0, cps: 47 },
                     { id: 'factory', name: '🏭 Chocolate Factory', baseCost: 130000, cost: 130000, count: 0, cps: 260 },
                     { id: 'bank', name: '🏦 Chocolate Bank', baseCost: 1400000, cost: 1400000, count: 0, cps: 1400 },
-                    { id: 'temple', name: '🏛️ Chocolate Temple', baseCost: 20000000, cost: 20000000, count: 0, cps: 7800 }
+                    { id: 'temple', name: '🏛️ Chocolate Temple', baseCost: 20000000, cost: 20000000, count: 0, cps: 7800 },
+                    { id: 'portal', name: '🌌 Chocolate Portal', baseCost: 330000000, cost: 330000000, count: 0, cps: 44000 },
+                    { id: 'machine', name: '🤖 Time Machine', baseCost: 5100000000, cost: 5100000000, count: 0, cps: 260000 }
                 ];
 
                 this.chocolateTypes = [
-                    { name: 'Milk Chocolate', rarity: 'common', emoji: '🍫', dropRate: 0.7 },
-                    { name: 'Dark Chocolate', rarity: 'common', emoji: '🍫', dropRate: 0.6 },
-                    { name: 'White Chocolate', rarity: 'rare', emoji: '🤍', dropRate: 0.2 },
-                    { name: 'Truffle', rarity: 'rare', emoji: '🍄', dropRate: 0.15 },
-                    { name: 'Praline', rarity: 'epic', emoji: '💎', dropRate: 0.05 },
-                    { name: 'Golden Chocolate', rarity: 'epic', emoji: '🌟', dropRate: 0.03 },
-                    { name: 'Legendary Cocoa Bean', rarity: 'legendary', emoji: '👑', dropRate: 0.01 },
-                    { name: 'Divine Chocolate', rarity: 'legendary', emoji: '✨', dropRate: 0.005 }
+                    { name: 'Milk Chocolate', rarity: 'common', emoji: '🍫', dropRate: 0.5, value: 10 },
+                    { name: 'Dark Chocolate', rarity: 'common', emoji: '🖤', dropRate: 0.4, value: 15 },
+                    { name: 'White Chocolate', rarity: 'rare', emoji: '🤍', dropRate: 0.15, value: 50 },
+                    { name: 'Truffle', rarity: 'rare', emoji: '🍄', dropRate: 0.12, value: 75 },
+                    { name: 'Praline', rarity: 'epic', emoji: '💎', dropRate: 0.04, value: 250 },
+                    { name: 'Golden Chocolate', rarity: 'epic', emoji: '🌟', dropRate: 0.02, value: 500 },
+                    { name: 'Legendary Cocoa Bean', rarity: 'legendary', emoji: '👑', dropRate: 0.008, value: 1000 },
+                    { name: 'Divine Chocolate', rarity: 'legendary', emoji: '✨', dropRate: 0.003, value: 2500 },
+                    { name: 'Cosmic Chocolate', rarity: 'legendary', emoji: '🌠', dropRate: 0.001, value: 10000 }
+                ];
+
+                this.wheelPrizes = [
+                    { type: 'chocolates', value: 100, text: '100 🍫' },
+                    { type: 'multiplier', value: 2, duration: 30000, text: '2x Mult' },
+                    { type: 'chocolates', value: 500, text: '500 🍫' },
+                    { type: 'item', rarity: 'rare', text: 'Rare Item' },
+                    { type: 'chocolates', value: 1000, text: '1000 🍫' },
+                    { type: 'multiplier', value: 5, duration: 15000, text: '5x Mult' }
+                ];
+
+                this.achievementsList = [
+                    { id: 'first_click', name: 'First Taste', desc: 'Click the chocolate for the first time', requirement: () => this.chocolates >= 1 },
+                    { id: 'hundred_chocolates', name: 'Sweet Hundred', desc: 'Reach 100 chocolates', requirement: () => this.chocolates >= 100 },
+                    { id: 'first_upgrade', name: 'Automation Begins', desc: 'Buy your first upgrade', requirement: () => this.upgrades.some(u => u.count > 0) },
+                    { id: 'thousand_chocolates', name: 'Chocolate Millionaire', desc: 'Reach 1,000 chocolates', requirement: () => this.chocolates >= 1000 },
+                    { id: 'ten_cps', name: 'Production Line', desc: 'Reach 10 chocolates per second', requirement: () => this.chocolatesPerSecond >= 10 },
+                    { id: 'first_spin', name: 'Lucky Spinner', desc: 'Use the spin wheel for the first time', requirement: () => this.achievements.has('spun_wheel') },
+                    { id: 'first_prestige', name: 'Rebirth', desc: 'Prestige for the first time', requirement: () => this.prestigePoints >= 1 },
+                    { id: 'hundred_cps', name: 'Chocolate Factory', desc: 'Reach 100 chocolates per second', requirement: () => this.chocolatesPerSecond >= 100 }
                 ];
 
                 this.init();
@@ -374,6 +868,7 @@
                 this.renderInventory();
                 this.startGameLoop();
                 this.updateDisplay();
+                this.checkAchievements();
             }
 
             setupEventListeners() {
@@ -384,10 +879,33 @@
                 document.getElementById('prestigeBtn').addEventListener('click', () => {
                     this.prestige();
                 });
+
+                document.getElementById('spinWheelBtn').addEventListener('click', () => {
+                    this.openSpinWheel();
+                });
+
+                document.getElementById('goldenChocolateBtn').addEventListener('click', () => {
+                    this.activateGoldenRush();
+                });
+
+                document.getElementById('closeSpinModal').addEventListener('click', () => {
+                    this.closeSpinWheel();
+                });
+
+                document.getElementById('spinBtn').addEventListener('click', () => {
+                    this.spinWheel();
+                });
+
+                // Close modal when clicking outside
+                document.getElementById('spinWheelModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'spinWheelModal') {
+                        this.closeSpinWheel();
+                    }
+                });
             }
 
             clickChocolate(e) {
-                const clickPower = this.clickPower * (1 + this.prestigePoints * 0.1);
+                const clickPower = this.clickPower * (1 + this.prestigePoints * 0.1) * this.multiplier;
                 this.chocolates += clickPower;
                 
                 // Create click animation
@@ -397,17 +915,156 @@
                 
                 const animation = document.createElement('div');
                 animation.className = 'click-animation';
-                animation.textContent = `+${Math.floor(clickPower)}`;
+                animation.textContent = `+${this.formatNumber(Math.floor(clickPower))}`;
                 animation.style.left = x + 'px';
                 animation.style.top = y + 'px';
                 
                 e.target.parentElement.appendChild(animation);
-                setTimeout(() => animation.remove(), 1000);
+                setTimeout(() => animation.remove(), 1200);
 
                 // Random chocolate drop
                 this.tryChocolateDrop();
+                
+                // Chance for golden chocolate to appear
+                if (Math.random() < 0.001 && !this.goldenChocolateActive) {
+                    this.spawnGoldenChocolate();
+                }
+
                 this.updateDisplay();
+                this.checkAchievements();
                 this.saveGame();
+            }
+
+            spawnGoldenChocolate() {
+                const golden = document.createElement('div');
+                golden.className = 'golden-chocolate';
+                golden.innerHTML = '🌟';
+                golden.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+                golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+                
+                document.body.appendChild(golden);
+                
+                const clickHandler = () => {
+                    const bonus = this.chocolates * 0.1 + 1000;
+                    this.chocolates += bonus;
+                    this.showNotification(`Golden Chocolate! +${this.formatNumber(Math.floor(bonus))} chocolates!`);
+                    golden.remove();
+                    this.updateDisplay();
+                    this.saveGame();
+                };
+                
+                golden.addEventListener('click', clickHandler);
+                
+                // Remove after 10 seconds
+                setTimeout(() => {
+                    if (document.body.contains(golden)) {
+                        golden.remove();
+                    }
+                }, 10000);
+            }
+
+            activateGoldenRush() {
+                if (this.chocolates >= 500) {
+                    this.chocolates -= 500;
+                    
+                    // Spawn 5 golden chocolates
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            this.spawnGoldenChocolate();
+                        }, i * 1000);
+                    }
+                    
+                    this.showNotification('Golden Rush activated! 🌟');
+                    this.updateDisplay();
+                    this.saveGame();
+                }
+            }
+
+            openSpinWheel() {
+                if (this.chocolates >= 50) {
+                    document.getElementById('spinWheelModal').style.display = 'flex';
+                } else {
+                    this.showNotification('Need 50 chocolates to spin!');
+                }
+            }
+
+            closeSpinWheel() {
+                document.getElementById('spinWheelModal').style.display = 'none';
+            }
+
+            spinWheel() {
+                const now = Date.now();
+                if (now - this.lastSpinTime < this.spinCooldown) {
+                    const remaining = Math.ceil((this.spinCooldown - (now - this.lastSpinTime)) / 1000);
+                    this.showNotification(`Wait ${remaining}s before spinning again!`);
+                    return;
+                }
+
+                if (this.chocolates < 50) {
+                    this.showNotification('Need 50 chocolates to spin!');
+                    return;
+                }
+
+                this.chocolates -= 50;
+                this.lastSpinTime = now;
+
+                const wheel = document.getElementById('wheel');
+                const spinButton = document.getElementById('spinBtn');
+                
+                spinButton.disabled = true;
+                spinButton.textContent = 'Spinning...';
+
+                // Random rotation (multiple full spins + random position)
+                const randomRotation = 1440 + Math.random() * 360; // 4 full spins + random
+                wheel.style.transform = `rotate(${randomRotation}deg)`;
+
+                setTimeout(() => {
+                    const finalRotation = randomRotation % 360;
+                    const prizeIndex = Math.floor((360 - finalRotation + 30) / 60) % 6;
+                    const prize = this.wheelPrizes[prizeIndex];
+
+                    this.awardSpinPrize(prize);
+                    
+                    spinButton.disabled = false;
+                    spinButton.textContent = 'Spin Again!';
+                    
+                    this.achievements.add('spun_wheel');
+                    this.checkAchievements();
+                    this.updateDisplay();
+                    this.saveGame();
+                    
+                    setTimeout(() => {
+                        this.closeSpinWheel();
+                    }, 2000);
+                }, 3000);
+            }
+
+            awardSpinPrize(prize) {
+                switch (prize.type) {
+                    case 'chocolates':
+                        this.chocolates += prize.value;
+                        this.showNotification(`Won ${prize.value} chocolates! 🍫`);
+                        break;
+                    
+                    case 'multiplier':
+                        const oldMultiplier = this.multiplier;
+                        this.multiplier *= prize.value;
+                        this.showNotification(`${prize.value}x multiplier for ${prize.duration/1000}s! 🚀`);
+                        
+                        setTimeout(() => {
+                            this.multiplier = oldMultiplier;
+                            this.showNotification('Multiplier expired!');
+                            this.updateDisplay();
+                        }, prize.duration);
+                        break;
+                    
+                    case 'item':
+                        const rareItems = this.chocolateTypes.filter(item => item.rarity === prize.rarity);
+                        const randomItem = rareItems[Math.floor(Math.random() * rareItems.length)];
+                        this.addToInventory(randomItem);
+                        this.showNotification(`Won ${randomItem.emoji} ${randomItem.name}!`);
+                        break;
+                }
             }
 
             tryChocolateDrop() {
@@ -416,7 +1073,7 @@
 
                 for (const chocolate of this.chocolateTypes) {
                     cumulativeRate += chocolate.dropRate;
-                    if (random < cumulativeRate / 10) { // Reduced drop rate
+                    if (random < cumulativeRate / 20) { // Reduced drop rate
                         this.addToInventory(chocolate);
                         this.showNotification(`Found ${chocolate.emoji} ${chocolate.name}!`);
                         break;
@@ -431,6 +1088,28 @@
                 }
                 this.inventory[key].quantity++;
                 this.renderInventory();
+            }
+
+            checkAchievements() {
+                for (const achievement of this.achievementsList) {
+                    if (!this.achievements.has(achievement.id) && achievement.requirement()) {
+                        this.achievements.add(achievement.id);
+                        this.showAchievement(achievement);
+                    }
+                }
+            }
+
+            showAchievement(achievement) {
+                const container = document.getElementById('achievements-container');
+                const div = document.createElement('div');
+                div.className = 'achievement';
+                div.innerHTML = `
+                    <div style="font-weight: 700; margin-bottom: 5px;">🏆 ${achievement.name}</div>
+                    <div style="font-size: 12px; opacity: 0.9;">${achievement.desc}</div>
+                `;
+                container.appendChild(div);
+                
+                setTimeout(() => div.remove(), 5000);
             }
 
             showNotification(message) {
@@ -453,10 +1132,12 @@
                         div.classList.add('affordable');
                     }
 
+                    const totalCps = upgrade.count * upgrade.cps * (1 + this.prestigePoints * 0.1);
+
                     div.innerHTML = `
                         <div class="upgrade-name">${upgrade.name}</div>
-                        <div class="upgrade-cost">Cost: ${this.formatNumber(upgrade.cost)}</div>
-                        <div class="upgrade-count">Owned: ${upgrade.count}</div>
+                        <div class="upgrade-cost">💰 ${this.formatNumber(upgrade.cost)} | ⚡ ${this.formatNumber(upgrade.cps * (1 + this.prestigePoints * 0.1))}/sec</div>
+                        <div class="upgrade-count">Owned: ${upgrade.count} | Total: ${this.formatNumber(totalCps)}/sec</div>
                     `;
 
                     div.addEventListener('click', () => this.buyUpgrade(upgrade));
@@ -468,43 +1149,45 @@
                 const container = document.getElementById('inventory-container');
                 container.innerHTML = '';
 
-                Object.values(this.inventory).forEach(item => {
-                    if (item.quantity > 0) {
-                        const div = document.createElement('div');
-                        div.className = `inventory-item ${item.rarity}`;
+                const sortedItems = Object.values(this.inventory)
+                    .filter(item => item.quantity > 0)
+                    .sort((a, b) => {
+                        const rarityOrder = { common: 0, rare: 1, epic: 2, legendary: 3 };
+                        return rarityOrder[b.rarity] - rarityOrder[a.rarity];
+                    });
 
-                        div.innerHTML = `
-                            <div class="item-info">
-                                <div class="item-name">${item.emoji} ${item.name}</div>
-                                <div class="item-rarity ${item.rarity}">${item.rarity}</div>
-                            </div>
-                            <div>
-                                <span class="item-quantity">${item.quantity}</span>
-                                <button class="trade-button" onclick="game.tradeItem('${item.name}')">Trade</button>
-                            </div>
-                        `;
+                sortedItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = `inventory-item ${item.rarity}`;
 
-                        container.appendChild(div);
-                    }
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-name">${item.emoji} ${item.name}</div>
+                            <div class="item-rarity ${item.rarity}">${item.rarity} • ${item.value} value</div>
+                        </div>
+                        <div class="item-actions">
+                            <span class="item-quantity">${item.quantity}</span>
+                            <button class="trade-button" onclick="game.tradeItem('${item.name}')">Trade</button>
+                        </div>
+                    `;
+
+                    container.appendChild(div);
                 });
+
+                if (sortedItems.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">No chocolates collected yet.<br>Click to find some!</div>';
+                }
             }
 
             tradeItem(itemName) {
                 const item = this.inventory[itemName];
                 if (!item || item.quantity <= 0) return;
 
-                const tradeValues = {
-                    'common': 10,
-                    'rare': 50,
-                    'epic': 250,
-                    'legendary': 1000
-                };
-
-                const value = tradeValues[item.rarity];
+                const value = item.value * (1 + this.prestigePoints * 0.05);
                 this.chocolates += value;
                 item.quantity--;
 
-                this.showNotification(`Traded ${item.name} for ${value} chocolates!`);
+                this.showNotification(`Traded ${item.name} for ${this.formatNumber(Math.floor(value))} chocolates!`);
                 this.renderInventory();
                 this.updateDisplay();
                 this.saveGame();
@@ -519,6 +1202,7 @@
                     this.calculateCPS();
                     this.renderUpgrades();
                     this.updateDisplay();
+                    this.checkAchievements();
                     this.saveGame();
                     
                     this.showNotification(`Bought ${upgrade.name}!`);
@@ -528,7 +1212,7 @@
             calculateCPS() {
                 this.chocolatesPerSecond = 0;
                 this.upgrades.forEach(upgrade => {
-                    this.chocolatesPerSecond += upgrade.count * upgrade.cps * (1 + this.prestigePoints * 0.1);
+                    this.chocolatesPerSecond += upgrade.count * upgrade.cps * (1 + this.prestigePoints * 0.1) * this.multiplier;
                 });
             }
 
@@ -537,16 +1221,18 @@
                     const newPrestigePoints = Math.floor(this.chocolates / 1000000);
                     this.prestigePoints += newPrestigePoints;
                     
-                    // Reset everything except prestige points
+                    // Reset everything except prestige points and achievements
                     this.chocolates = 0;
                     this.chocolatesPerSecond = 0;
+                    this.multiplier = 1;
                     this.inventory = {};
                     this.upgrades.forEach(upgrade => {
                         upgrade.count = 0;
                         upgrade.cost = upgrade.baseCost;
                     });
 
-                    this.showNotification(`Prestige! Gained ${newPrestigePoints} prestige points!`);
+                    this.showNotification(`Prestige! Gained ${newPrestigePoints} prestige points! 🌟`);
+                    this.checkAchievements();
                     this.renderUpgrades();
                     this.renderInventory();
                     this.updateDisplay();
@@ -566,31 +1252,77 @@
                 setInterval(() => {
                     this.saveGame();
                 }, 30000);
+
+                // Random events
+                setInterval(() => {
+                    if (Math.random() < 0.001) { // Very rare
+                        this.triggerRandomEvent();
+                    }
+                }, 5000);
+            }
+
+            triggerRandomEvent() {
+                const events = [
+                    () => {
+                        const bonus = Math.floor(this.chocolates * 0.05) + 100;
+                        this.chocolates += bonus;
+                        this.showNotification(`🎉 Chocolate Rain! +${this.formatNumber(bonus)} chocolates!`);
+                    },
+                    () => {
+                        this.multiplier *= 3;
+                        this.showNotification('⚡ Lightning Strike! 3x multiplier for 20s!');
+                        setTimeout(() => {
+                            this.multiplier /= 3;
+                            this.showNotification('⚡ Lightning effect ended');
+                            this.updateDisplay();
+                        }, 20000);
+                    },
+                    () => {
+                        const rareItem = this.chocolateTypes.filter(item => item.rarity === 'epic' || item.rarity === 'legendary');
+                        const randomItem = rareItem[Math.floor(Math.random() * rareItem.length)];
+                        this.addToInventory(randomItem);
+                        this.showNotification(`🎁 Mysterious Gift! Found ${randomItem.emoji} ${randomItem.name}!`);
+                    }
+                ];
+
+                const randomEvent = events[Math.floor(Math.random() * events.length)];
+                randomEvent();
+                this.updateDisplay();
+                this.saveGame();
             }
 
             updateDisplay() {
                 document.getElementById('chocolates').textContent = this.formatNumber(Math.floor(this.chocolates));
                 document.getElementById('cps').textContent = this.formatNumber(this.chocolatesPerSecond.toFixed(1));
                 document.getElementById('prestige-points').textContent = this.prestigePoints;
+                document.getElementById('multiplier').textContent = this.multiplier.toFixed(1) + 'x';
                 
+                // Update button states
                 const prestigeBtn = document.getElementById('prestigeBtn');
                 if (this.chocolates >= 1000000) {
                     prestigeBtn.disabled = false;
-                    prestigeBtn.textContent = `Reset for ${Math.floor(this.chocolates / 1000000)} Prestige Points`;
+                    prestigeBtn.innerHTML = `🌟 Reset for ${Math.floor(this.chocolates / 1000000)} Prestige Points`;
                 } else {
                     prestigeBtn.disabled = true;
-                    prestigeBtn.textContent = `Reset for Prestige (Need 1M chocolates)`;
+                    prestigeBtn.innerHTML = '🌟 Reset for Prestige (Need 1M)';
                 }
+
+                const spinBtn = document.getElementById('spinWheelBtn');
+                spinBtn.disabled = this.chocolates < 50;
+
+                const goldenBtn = document.getElementById('goldenChocolateBtn');
+                goldenBtn.disabled = this.chocolates < 500;
 
                 this.renderUpgrades();
             }
 
             formatNumber(num) {
+                if (num >= 1e15) return (num / 1e15).toFixed(2) + 'Qa';
                 if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
                 if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
                 if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
                 if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
-                return num.toString();
+                return Math.floor(num).toString();
             }
 
             saveGame() {
@@ -599,29 +1331,38 @@
                     prestigePoints: this.prestigePoints,
                     upgrades: this.upgrades,
                     inventory: this.inventory,
+                    achievements: Array.from(this.achievements),
+                    multiplier: this.multiplier,
+                    lastSpinTime: this.lastSpinTime,
                     timestamp: Date.now()
                 };
-                // Note: Using in-memory storage since localStorage isn't available in Claude artifacts
                 window.gameSave = saveData;
             }
 
             loadGame() {
-                // Note: In a real environment, this would load from localStorage
                 if (window.gameSave) {
                     const save = window.gameSave;
                     this.chocolates = save.chocolates || 0;
                     this.prestigePoints = save.prestigePoints || 0;
                     this.upgrades = save.upgrades || this.upgrades;
                     this.inventory = save.inventory || {};
+                    this.achievements = new Set(save.achievements || []);
+                    this.multiplier = save.multiplier || 1;
+                    this.lastSpinTime = save.lastSpinTime || 0;
                     
                     // Calculate offline progress
                     if (save.timestamp) {
                         const offlineTime = (Date.now() - save.timestamp) / 1000;
                         this.calculateCPS();
-                        const offlineEarnings = this.chocolatesPerSecond * Math.min(offlineTime, 3600); // Max 1 hour offline
+                        const maxOfflineHours = 8;
+                        const effectiveOfflineTime = Math.min(offlineTime, maxOfflineHours * 3600);
+                        const offlineEarnings = this.chocolatesPerSecond * effectiveOfflineTime;
+                        
                         if (offlineEarnings > 0) {
                             this.chocolates += offlineEarnings;
-                            this.showNotification(`Welcome back! You earned ${this.formatNumber(Math.floor(offlineEarnings))} chocolates while away!`);
+                            const hours = Math.floor(effectiveOfflineTime / 3600);
+                            const minutes = Math.floor((effectiveOfflineTime % 3600) / 60);
+                            this.showNotification(`Welcome back! You were away for ${hours}h ${minutes}m and earned ${this.formatNumber(Math.floor(offlineEarnings))} chocolates!`);
                         }
                     }
                 }
@@ -631,7 +1372,7 @@
 
         // Start the game
         const game = new ChocolateGame();
-        window.game = game; // Make game accessible for trading buttons
+        window.game = game; // Make game accessible globally
     </script>
 </body>
 </html>
