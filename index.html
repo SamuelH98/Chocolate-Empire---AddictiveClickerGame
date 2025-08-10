@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chocolate Empire - Ultimate Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Chocolate Empire - Enhanced Mobile Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
         
@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
@@ -39,6 +40,7 @@
             color: white;
             overflow-x: hidden;
             position: relative;
+            touch-action: manipulation;
         }
 
         body::before {
@@ -81,12 +83,56 @@
         }
 
         .main-game {
-            padding: 40px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
             overflow: hidden;
+        }
+
+        /* Mobile Navigation Bar */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            z-index: 100;
+            padding: 10px;
+        }
+
+        .mobile-nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .mobile-nav-btn {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #FF6B35 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .mobile-nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 140, 66, 0.4);
         }
 
         .stats {
@@ -435,6 +481,232 @@
             box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
         }
 
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            padding: 30px;
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: color 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        /* Achievement Modal Styles */
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            text-align: left;
+        }
+
+        .achievement-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 140, 66, 0.15) 0%, 
+                rgba(139, 90, 60, 0.15) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.unlocked {
+            border-color: var(--success);
+            background: linear-gradient(135deg, 
+                rgba(16, 185, 129, 0.15) 0%, 
+                rgba(255, 140, 66, 0.15) 100%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .achievement-card.unlocked::before {
+            content: '🏆';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+        }
+
+        .achievement-card {
+            position: relative;
+        }
+
+        .achievement-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+        }
+
+        .achievement-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        .achievement-status {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .achievement-status.unlocked {
+            background: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .achievement-status.locked {
+            background: rgba(107, 68, 35, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Collection Modal Styles */
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            text-align: left;
+        }
+
+        .collection-item {
+            background: linear-gradient(135deg, 
+                rgba(74, 44, 42, 0.3) 0%, 
+                rgba(107, 68, 35, 0.3) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(107, 68, 35, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .collection-item.rare { 
+            border-color: #3B82F6; 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); 
+        }
+        .collection-item.epic { 
+            border-color: #8B5CF6; 
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); 
+        }
+        .collection-item.legendary { 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); 
+        }
+
+        .collection-emoji {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .collection-name {
+            font-weight: 600;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .collection-rarity {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .collection-stats {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .collection-quantity {
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .collection-value {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .trade-all-button {
+            background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .trade-all-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+
         /* Spin Wheel Styles */
         .spin-wheel-container {
             position: fixed;
@@ -448,18 +720,21 @@
             align-items: center;
             z-index: 1000;
             backdrop-filter: blur(10px);
+            padding: 20px;
         }
 
         .spin-wheel-modal {
             background: linear-gradient(135deg, 
                 rgba(255, 255, 255, 0.1) 0%, 
                 rgba(255, 255, 255, 0.05) 100%);
-            padding: 40px;
+            padding: 30px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
             position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
         }
 
         .wheel {
@@ -544,22 +819,6 @@
             transform: none;
         }
 
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .close-modal:hover {
-            color: white;
-        }
-
         /* Action Buttons */
         .action-buttons {
             display: flex;
@@ -583,6 +842,7 @@
             letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
+            min-height: 48px;
         }
 
         .action-btn:hover {
@@ -607,7 +867,7 @@
         /* Achievements */
         .achievements {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px;
             right: 20px;
             z-index: 100;
         }
@@ -682,6 +942,7 @@
             50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.9); }
         }
 
+        /* Mobile Responsive Styles */
         @media (max-width: 1200px) {
             .game-container {
                 grid-template-columns: 1fr 320px;
@@ -690,11 +951,41 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding-bottom: 80px;
+            }
+
             .game-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
-                padding: 10px;
+                grid-template-rows: 1fr;
+                padding: 10px 10px 90px 10px;
                 gap: 15px;
+                height: calc(100vh - 80px);
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .upgrades-panel, .inventory-panel {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 80px;
+                z-index: 50;
+                padding: 20px;
+                border-radius: 0;
+                margin: 0;
+            }
+
+            .upgrades-panel.active, .inventory-panel.active {
+                display: block;
+            }
+
+            .main-game {
+                padding: 20px 10px;
             }
 
             .main-chocolate {
@@ -704,21 +995,112 @@
             }
 
             .stats {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
+                margin-bottom: 20px;
             }
 
             .stat-card {
-                padding: 20px;
+                padding: 15px;
             }
 
             .stat-value {
                 font-size: 24px;
             }
 
+            .stat-label {
+                font-size: 12px;
+            }
+
             .wheel {
                 width: 250px;
                 height: 250px;
+            }
+
+            .action-buttons {
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .action-btn {
+                padding: 10px 15px;
+                font-size: 12px;
+                min-height: 44px;
+            }
+
+            .achievements {
+                bottom: 100px;
+                right: 10px;
+                left: 10px;
+            }
+
+            .achievement {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .achievement-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .collection-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .collection-emoji {
+                font-size: 36px;
+            }
+
+            .collection-name {
+                font-size: 14px;
+            }
+
+            .spin-wheel-modal {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .main-chocolate {
+                width: 180px;
+                height: 180px;
+                font-size: 50px;
+            }
+
+            .mobile-nav-btn {
+                padding: 10px 15px;
+                font-size: 11px;
+                min-height: 44px;
+            }
+
+            .wheel {
+                width: 200px;
+                height: 200px;
             }
         }
     </style>
@@ -775,6 +1157,42 @@
         </div>
     </div>
 
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-buttons">
+            <button class="mobile-nav-btn" id="showMainBtn">
+                🍫<br>Main
+            </button>
+            <button class="mobile-nav-btn" id="showUpgradesBtn">
+                🏭<br>Factory
+            </button>
+            <button class="mobile-nav-btn" id="showInventoryBtn">
+                🎒<br>Collection
+            </button>
+            <button class="mobile-nav-btn" id="showAchievementsBtn">
+                🏆<br>Achievements
+            </button>
+        </div>
+    </div>
+
+    <!-- Achievements Modal -->
+    <div class="modal" id="achievementsModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAchievementsModal">&times;</button>
+            <h2 class="modal-title">🏆 Achievements</h2>
+            <div class="achievement-grid" id="achievementsList"></div>
+        </div>
+    </div>
+
+    <!-- Collection Modal -->
+    <div class="modal" id="collectionModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeCollectionModal">&times;</button>
+            <h2 class="modal-title">🎒 Chocolate Collection</h2>
+            <div class="collection-grid" id="collectionGrid"></div>
+        </div>
+    </div>
+
     <!-- Spin Wheel Modal -->
     <div class="spin-wheel-container" id="spinWheelModal">
         <div class="spin-wheel-modal">
@@ -813,6 +1231,7 @@
                 this.goldenChocolateActive = false;
                 this.lastSpinTime = 0;
                 this.spinCooldown = 5000; // 5 seconds
+                this.currentView = 'main'; // For mobile navigation
                 
                 this.upgrades = [
                     { id: 'cursor', name: '👆 Auto Clicker', baseCost: 15, cost: 15, count: 0, cps: 0.1 },
@@ -855,7 +1274,9 @@
                     { id: 'ten_cps', name: 'Production Line', desc: 'Reach 10 chocolates per second', requirement: () => this.chocolatesPerSecond >= 10 },
                     { id: 'first_spin', name: 'Lucky Spinner', desc: 'Use the spin wheel for the first time', requirement: () => this.achievements.has('spun_wheel') },
                     { id: 'first_prestige', name: 'Rebirth', desc: 'Prestige for the first time', requirement: () => this.prestigePoints >= 1 },
-                    { id: 'hundred_cps', name: 'Chocolate Factory', desc: 'Reach 100 chocolates per second', requirement: () => this.chocolatesPerSecond >= 100 }
+                    { id: 'hundred_cps', name: 'Chocolate Factory', desc: 'Reach 100 chocolates per second', requirement: () => this.chocolatesPerSecond >= 100 },
+                    { id: 'collector', name: 'Collector', desc: 'Collect 10 different chocolate types', requirement: () => Object.keys(this.inventory).length >= 10 },
+                    { id: 'legendary_hunter', name: 'Legendary Hunter', desc: 'Find a legendary chocolate', requirement: () => Object.values(this.inventory).some(item => item.rarity === 'legendary' && item.quantity > 0) }
                 ];
 
                 this.init();
@@ -866,6 +1287,7 @@
                 this.setupEventListeners();
                 this.renderUpgrades();
                 this.renderInventory();
+                this.renderAchievements();
                 this.startGameLoop();
                 this.updateDisplay();
                 this.checkAchievements();
@@ -888,6 +1310,7 @@
                     this.activateGoldenRush();
                 });
 
+                // Spin wheel events
                 document.getElementById('closeSpinModal').addEventListener('click', () => {
                     this.closeSpinWheel();
                 });
@@ -896,12 +1319,156 @@
                     this.spinWheel();
                 });
 
-                // Close modal when clicking outside
                 document.getElementById('spinWheelModal').addEventListener('click', (e) => {
                     if (e.target.id === 'spinWheelModal') {
                         this.closeSpinWheel();
                     }
                 });
+
+                // Mobile navigation events
+                document.getElementById('showMainBtn').addEventListener('click', () => {
+                    this.showView('main');
+                });
+
+                document.getElementById('showUpgradesBtn').addEventListener('click', () => {
+                    this.showView('upgrades');
+                });
+
+                document.getElementById('showInventoryBtn').addEventListener('click', () => {
+                    this.showView('inventory');
+                });
+
+                document.getElementById('showAchievementsBtn').addEventListener('click', () => {
+                    this.openAchievementsModal();
+                });
+
+                // Achievement modal events
+                document.getElementById('closeAchievementsModal').addEventListener('click', () => {
+                    this.closeAchievementsModal();
+                });
+
+                document.getElementById('achievementsModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'achievementsModal') {
+                        this.closeAchievementsModal();
+                    }
+                });
+
+                // Collection modal events
+                document.getElementById('closeCollectionModal').addEventListener('click', () => {
+                    this.closeCollectionModal();
+                });
+
+                document.getElementById('collectionModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'collectionModal') {
+                        this.closeCollectionModal();
+                    }
+                });
+            }
+
+            showView(view) {
+                this.currentView = view;
+                
+                // Hide all panels first
+                document.querySelector('.main-game').style.display = view === 'main' ? 'flex' : 'none';
+                document.querySelector('.upgrades-panel').classList.toggle('active', view === 'upgrades');
+                document.querySelector('.inventory-panel').classList.toggle('active', view === 'inventory');
+                
+                // Update button states
+                document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                    btn.style.background = 'linear-gradient(135deg, var(--accent-orange) 0%, #FF6B35 100%)';
+                });
+                
+                if (view === 'main') {
+                    document.getElementById('showMainBtn').style.background = 'linear-gradient(135deg, var(--accent-gold) 0%, #FFA500 100%)';
+                } else if (view === 'upgrades') {
+                    document.getElementById('showUpgradesBtn').style.background = 'linear-gradient(135deg, var(--accent-gold) 0%, #FFA500 100%)';
+                } else if (view === 'inventory') {
+                    document.getElementById('showInventoryBtn').style.background = 'linear-gradient(135deg, var(--accent-gold) 0%, #FFA500 100%)';
+                }
+            }
+
+            openAchievementsModal() {
+                this.renderAchievements();
+                document.getElementById('achievementsModal').style.display = 'flex';
+            }
+
+            closeAchievementsModal() {
+                document.getElementById('achievementsModal').style.display = 'none';
+            }
+
+            openCollectionModal() {
+                this.renderCollectionModal();
+                document.getElementById('collectionModal').style.display = 'flex';
+            }
+
+            closeCollectionModal() {
+                document.getElementById('collectionModal').style.display = 'none';
+            }
+
+            renderAchievements() {
+                const container = document.getElementById('achievementsList');
+                container.innerHTML = '';
+
+                this.achievementsList.forEach(achievement => {
+                    const div = document.createElement('div');
+                    const isUnlocked = this.achievements.has(achievement.id);
+                    div.className = `achievement-card ${isUnlocked ? 'unlocked' : ''}`;
+
+                    div.innerHTML = `
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-desc">${achievement.desc}</div>
+                        <div class="achievement-status ${isUnlocked ? 'unlocked' : 'locked'}">
+                            ${isUnlocked ? 'Unlocked!' : 'Locked'}
+                        </div>
+                    `;
+
+                    container.appendChild(div);
+                });
+            }
+
+            renderCollectionModal() {
+                const container = document.getElementById('collectionGrid');
+                container.innerHTML = '';
+
+                // Include all chocolate types, showing 0 quantity for uncollected ones
+                this.chocolateTypes.forEach(chocolateType => {
+                    const item = this.inventory[chocolateType.name] || { ...chocolateType, quantity: 0 };
+                    
+                    const div = document.createElement('div');
+                    div.className = `collection-item ${chocolateType.rarity}`;
+
+                    const totalValue = item.quantity * chocolateType.value * (1 + this.prestigePoints * 0.05);
+
+                    div.innerHTML = `
+                        <div class="collection-emoji">${chocolateType.emoji}</div>
+                        <div class="collection-name">${chocolateType.name}</div>
+                        <div class="collection-rarity ${chocolateType.rarity}">${chocolateType.rarity}</div>
+                        <div class="collection-stats">
+                            <div class="collection-quantity">Owned: ${item.quantity}</div>
+                            <div class="collection-value">Value: ${this.formatNumber(Math.floor(totalValue))}</div>
+                            ${item.quantity > 0 ? `<button class="trade-all-button" onclick="game.tradeAllItems('${chocolateType.name}')">Trade All</button>` : ''}
+                        </div>
+                    `;
+
+                    container.appendChild(div);
+                });
+            }
+
+            tradeAllItems(itemName) {
+                const item = this.inventory[itemName];
+                if (!item || item.quantity <= 0) return;
+
+                const totalValue = item.quantity * item.value * (1 + this.prestigePoints * 0.05);
+                const quantity = item.quantity;
+                
+                this.chocolates += totalValue;
+                item.quantity = 0;
+
+                this.showNotification(`Traded ${quantity} ${item.name} for ${this.formatNumber(Math.floor(totalValue))} chocolates!`);
+                this.renderInventory();
+                this.renderCollectionModal();
+                this.updateDisplay();
+                this.saveGame();
             }
 
             clickChocolate(e) {
@@ -941,6 +1508,7 @@
                 golden.innerHTML = '🌟';
                 golden.style.left = Math.random() * (window.innerWidth - 100) + 'px';
                 golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+                golden.style.zIndex = '999';
                 
                 document.body.appendChild(golden);
                 
@@ -1088,6 +1656,7 @@
                 }
                 this.inventory[key].quantity++;
                 this.renderInventory();
+                this.checkAchievements();
             }
 
             checkAchievements() {
@@ -1156,6 +1725,26 @@
                         return rarityOrder[b.rarity] - rarityOrder[a.rarity];
                     });
 
+                if (sortedItems.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">
+                            No chocolates collected yet.<br>Click to find some!<br>
+                            <button class="action-btn" onclick="game.openCollectionModal()" style="margin-top: 15px; font-size: 12px; padding: 8px 15px;">
+                                📖 View All Types
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Add "View All" button at the top
+                const viewAllBtn = document.createElement('button');
+                viewAllBtn.className = 'action-btn';
+                viewAllBtn.style.cssText = 'width: 100%; margin-bottom: 20px; font-size: 12px; padding: 8px 15px;';
+                viewAllBtn.innerHTML = '📖 View Complete Collection';
+                viewAllBtn.onclick = () => this.openCollectionModal();
+                container.appendChild(viewAllBtn);
+
                 sortedItems.forEach(item => {
                     const div = document.createElement('div');
                     div.className = `inventory-item ${item.rarity}`;
@@ -1173,10 +1762,6 @@
 
                     container.appendChild(div);
                 });
-
-                if (sortedItems.length === 0) {
-                    container.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">No chocolates collected yet.<br>Click to find some!</div>';
-                }
             }
 
             tradeItem(itemName) {
@@ -1334,8 +1919,11 @@
                     achievements: Array.from(this.achievements),
                     multiplier: this.multiplier,
                     lastSpinTime: this.lastSpinTime,
+                    currentView: this.currentView,
                     timestamp: Date.now()
                 };
+                
+                // Use a simple object to store the save data
                 window.gameSave = saveData;
             }
 
@@ -1349,6 +1937,7 @@
                     this.achievements = new Set(save.achievements || []);
                     this.multiplier = save.multiplier || 1;
                     this.lastSpinTime = save.lastSpinTime || 0;
+                    this.currentView = save.currentView || 'main';
                     
                     // Calculate offline progress
                     if (save.timestamp) {
@@ -1365,6 +1954,11 @@
                             this.showNotification(`Welcome back! You were away for ${hours}h ${minutes}m and earned ${this.formatNumber(Math.floor(offlineEarnings))} chocolates!`);
                         }
                     }
+                    
+                    // Restore mobile view state
+                    setTimeout(() => {
+                        this.showView(this.currentView);
+                    }, 100);
                 }
                 this.calculateCPS();
             }
@@ -1373,6 +1967,20 @@
         // Start the game
         const game = new ChocolateGame();
         window.game = game; // Make game accessible globally
+
+        // Handle orientation changes on mobile
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                game.updateDisplay();
+            }, 500);
+        });
+
+        // Handle page visibility for better mobile experience
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                game.updateDisplay();
+            }
+        });
     </script>
 </body>
 </html>
